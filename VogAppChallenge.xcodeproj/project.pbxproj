@@ -23,7 +23,6 @@
 		7DEF0C06225937D200F36976 /* PasswordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C05225937D200F36976 /* PasswordCell.swift */; };
 		7DEF0C08225939C300F36976 /* UserProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C07225939C300F36976 /* UserProfileTableViewController.swift */; };
 		7DEF0C0C22593EFD00F36976 /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C0B22593EFD00F36976 /* ActionCell.swift */; };
-		7DEF0C0E225943EB00F36976 /* UITableViewCell+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C0D225943EB00F36976 /* UITableViewCell+Extensions.swift */; };
 		7DEF0C10225960CB00F36976 /* InformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C0F225960CB00F36976 /* InformationCell.swift */; };
 		7DEF0C122259777C00F36976 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEF0C112259777C00F36976 /* User.swift */; };
 /* End PBXBuildFile section */
@@ -47,7 +46,6 @@
 		7DEF0C05225937D200F36976 /* PasswordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordCell.swift; sourceTree = "<group>"; };
 		7DEF0C07225939C300F36976 /* UserProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTableViewController.swift; sourceTree = "<group>"; };
 		7DEF0C0B22593EFD00F36976 /* ActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
-		7DEF0C0D225943EB00F36976 /* UITableViewCell+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Extensions.swift"; sourceTree = "<group>"; };
 		7DEF0C0F225960CB00F36976 /* InformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationCell.swift; sourceTree = "<group>"; };
 		7DEF0C112259777C00F36976 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -144,8 +142,8 @@
 			children = (
 				7DEF0BFF22592D8800F36976 /* UserProfileCoordinator.swift */,
 				7DEF0C07225939C300F36976 /* UserProfileTableViewController.swift */,
-				7DEF0C14225984BE00F36976 /* Views */,
 				7DEF0C13225984B900F36976 /* Model */,
+				7DEF0C14225984BE00F36976 /* Views */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -154,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				7DEF0C03225936E700F36976 /* PaddedTextfield.swift */,
-				7DEF0C0D225943EB00F36976 /* UITableViewCell+Extensions.swift */,
 				7D2AE133224E87AB009A167D /* UIView+Extensions.swift */,
 			);
 			path = Views;
@@ -253,7 +250,6 @@
 			files = (
 				7DEF0C06225937D200F36976 /* PasswordCell.swift in Sources */,
 				7D2AE12A224E7AAB009A167D /* APIService.swift in Sources */,
-				7DEF0C0E225943EB00F36976 /* UITableViewCell+Extensions.swift in Sources */,
 				7DEF0BEF2259299B00F36976 /* Coordinator.swift in Sources */,
 				7D2AE134224E87AB009A167D /* UIView+Extensions.swift in Sources */,
 				7DEF0C04225936E700F36976 /* PaddedTextfield.swift in Sources */,

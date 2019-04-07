@@ -10,9 +10,20 @@ import UIKit
 
 class UserProfileTableViewController: UITableViewController, Deinitcallable {
     // MARK: - Models
-    private let titles = [
+    private let sectionTitles = [
         "BASIC INFORMATION",
         "PASSWORD"
+    ]
+    
+    private let informationTitles = [
+        "Username",
+        "First Name",
+        "Last Name"
+    ]
+    
+    private let passwordTitles = [
+        "New Password",
+        "Re-enter Password"
     ]
     
     private var user: User?
@@ -41,12 +52,12 @@ class UserProfileTableViewController: UITableViewController, Deinitcallable {
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.separatorColor = .clear
         tableView.backgroundColor = #colorLiteral(red: 0.5592061877, green: 0.119877167, blue: 0.1227949187, alpha: 1)
-        tableView.contentInset = UIEdgeInsets(top: 25, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         tableView.dataSource = self
         tableView.delegate = self
     }
     
-    // MARK: -
+    // MARK: - API Calls
     private func fetchProfileInformation() {
         APIService.shared.mockRequest(.fetchProfileInformation) { [unowned self] result in
             switch result {
@@ -70,6 +81,19 @@ class UserProfileTableViewController: UITableViewController, Deinitcallable {
         }
     }
     
+    private func updatePassword(password: String, verified: String) {
+        print("password: \(password), verified: \(verified)")
+        APIService.shared.mockRequest(.updatePasswordInformation(currentPwd: verified, newPwd: password, pwdConfirmation: true)) { (result) in
+            switch result {
+            case .success(let data):
+                self.handlePasswordResult(data: data)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    // MARK: - Helpers
     private func updateUser(with data: Data) {
         struct DataResult: Decodable {
             let message: String
@@ -82,18 +106,6 @@ class UserProfileTableViewController: UITableViewController, Deinitcallable {
             self.user = user
             tableView.reloadData()
         } catch {}
-    }
-    
-    private func updatePassword(password: String, verified: String) {
-        print("password: \(password), verified: \(verified)")
-        APIService.shared.mockRequest(.updatePasswordInformation(currentPwd: verified, newPwd: password, pwdConfirmation: true)) { (result) in
-            switch result {
-            case .success(let data):
-                self.handlePasswordResult(data: data)
-            case .failure(let error):
-                print(error)
-            }
-        }
     }
     
     private func handlePasswordResult(data: Data) {
@@ -111,25 +123,27 @@ class UserProfileTableViewController: UITableViewController, Deinitcallable {
     }
 }
 
+// MARK: - ActionCellDelegate
 extension UserProfileTableViewController: ActionCellDelegate {
     func actionCellPressed(_ cell: ActionCell) {
         view.endEditing(true)
         
         if cell.tag == 1000 {
-            let firstNameCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! InformationCell
-            let lastNameCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! InformationCell
-            
-            guard let firstName = firstNameCell.textfield.text, let lastName = lastNameCell.textfield.text else {
+            guard
+                let firstNameCell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? InformationCell,
+                let lastNameCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? InformationCell,
+                let firstName = firstNameCell.textfield.text,
+                let lastName = lastNameCell.textfield.text else {
                 return
             }
             
             updateProfileInformation(firstName: firstName, lastName: lastName)
         } else if cell.tag == 2000 {
-            
-            let passwordCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! PasswordCell
-            let verifiedPwdCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as! PasswordCell
-            
-            guard let password = passwordCell.textfield.text, let verified = verifiedPwdCell.textfield.text else {
+            guard
+                let passwordCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? PasswordCell,
+                let verifiedPwdCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? PasswordCell,
+                let password = passwordCell.textfield.text,
+                let verified = verifiedPwdCell.textfield.text else {
                 return
             }
             
@@ -143,29 +157,49 @@ extension UserProfileTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 4
+            return informationTitles.count + 1
         case 1:
-            return 3
+            return passwordTitles.count + 1
         default:
             return 0
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return fetchCell(for: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 1 && indexPath.row == 2 || indexPath.section == 0 && indexPath.row == 3 {
+            return heightForActionCell
+        }
+        
+        return heightForCell
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return sectionTitles.count
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
+    }
+    
+    private func fetchCell(for indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
             if indexPath.row == 0 {
-                let cell = InformationCell(text: "Username")
+                let cell = InformationCell(text: informationTitles[indexPath.row])
                 cell.addDividerView()
                 cell.textfield.text = user?.userName
                 return cell
             } else if indexPath.row == 1 {
-                let cell = InformationCell(text: "First Name")
+                let cell = InformationCell(text: informationTitles[indexPath.row])
                 cell.addDividerView()
                 cell.textfield.text = user?.firstName
                 return cell
             } else if indexPath.row == 2 {
-                let cell = InformationCell(text: "Last Name")
+                let cell = InformationCell(text: informationTitles[indexPath.row])
                 cell.textfield.text = user?.lastName
                 return cell
             } else if indexPath.row == 3 {
@@ -178,11 +212,11 @@ extension UserProfileTableViewController {
             }
         case 1:
             if indexPath.row == 0 {
-                let cell = PasswordCell(placeholder: "New Password")
+                let cell = PasswordCell(placeholder: passwordTitles[indexPath.row])
                 cell.addDividerView()
                 return cell
             } else if indexPath.row == 1 {
-                let cell = PasswordCell(placeholder: "Re-enter Password")
+                let cell = PasswordCell(placeholder: passwordTitles[indexPath.row])
                 return cell
             } else if indexPath.row == 2 {
                 let cell = ActionCell()
@@ -195,23 +229,6 @@ extension UserProfileTableViewController {
         default:
             return UITableViewCell()
         }
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 1 && indexPath.row == 2 ||
-            indexPath.section == 0 && indexPath.row == 3 {
-            return heightForActionCell
-        }
-        
-        return heightForCell
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return titles.count
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return titles[section]
     }
 }
 
